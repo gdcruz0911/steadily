@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f8f8;
+  --surface-muted: #eaf1f0;
+  --foreground: #172321;
+  --muted-foreground: #52615f;
+  --accent: #0f5f59;
+  --accent-hover: #0a4844;
+  --focus-ring: #0f766e;
+  --border: #cdd9d7;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: var(--surface-muted);
+  color: var(--foreground);
+}

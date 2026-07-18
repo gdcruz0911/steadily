@@ -46,3 +46,23 @@ personal data; use synthetic examples only.
   applied.
 - **Follow-up:** Approve the migration plan. A DOM environment for React
   Testing Library and a lint dependency remain unapproved.
+
+---
+
+## 2026-07-18 — Phase 1 deployable shell scaffolded
+
+- **Context:** Create the approved App Router shell without authentication,
+  migrations, or product workflows.
+- **Decision:** Added Tailwind/shadcn configuration, explicit Supabase browser
+  and server factories, a mobile-first shell, the requested empty routes, and a
+  visible Settings product boundary.
+- **Data/safety impact:** Browser code reads only public Supabase variables.
+  No service-role key, OpenAI key, real data, or data-access feature exists.
+- **Changed:** Next/TypeScript/Tailwind configuration, shell components,
+  scaffold routes, one utility test, and package lockfile.
+- **Verified:** `npm run lint`, `npm run typecheck`, `npm run test`, and
+  `npm run build` pass. Local routes rendered with one heading each. Settings
+  was checked at 390px with no browser console warnings or errors.
+- **Follow-up:** Configure Supabase and implement only approved migrations and
+  authentication next. The npm audit reports two moderate findings; no forced
+  remediation was applied.

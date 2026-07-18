@@ -59,12 +59,13 @@ clinical claims.
 | Route | Purpose | Access |
 | --- | --- | --- |
 | / | Product boundary and sign-in entry | Public |
-| /sign-in | Email/password authentication | Public |
-| /track | Medications, doses, and check-in timeline | Authenticated owner |
-| /medications/[id] | Review/edit one medication and its doses | Authenticated owner |
-| /summary/new | Window selection, data preview, consent, generation | Authenticated owner |
-| /summaries/[id] | View one explicitly saved visit discussion summary | Authenticated owner |
-| /settings/data | Data deletion controls and retention explanation | Authenticated owner |
+| /login | Email/password authentication | Public |
+| /onboarding | Account setup after authentication | Authenticated owner |
+| /dashboard | Personal tracking overview | Authenticated owner |
+| /doses | Dose tracking | Authenticated owner |
+| /checkins | Structured check-ins | Authenticated owner |
+| /report | Summary preview, consent, generation, and explicit saving | Authenticated owner |
+| /settings | Data deletion controls and retention explanation | Authenticated owner |
 
 ## Component boundaries
 

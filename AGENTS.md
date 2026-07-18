@@ -10,9 +10,9 @@ called a **visit discussion summary**, never a clinical report.
 
 - Keep changes small and tied to the requested work; do not introduce app code
   before the approved foundation is in place.
-- Use the Next.js App Router when implementation begins. Put routes in `app/`,
-  reusable UI in `components/`, server-only integrations in `lib/server/`, and
-  shared types/validation in `lib/`.
+- Use the Next.js App Router when implementation begins. Put routes in
+  `src/app/`, reusable UI in `src/components/`, server-only integrations in
+  `src/lib/server/`, and shared types/validation in `src/lib/`.
 - Prefer server-side data access. Never expose service-role credentials or the
   OpenAI API key to browser code.
 - Keep secrets out of the repository, build log, fixtures, screenshots, and
