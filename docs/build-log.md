@@ -86,3 +86,24 @@ personal data; use synthetic examples only.
   untracked `.env.local` Supabase configuration is present.
 - **Follow-up:** Apply migrations to the configured non-production project and
   execute `docs/manual-auth-rls-test.md` with synthetic User A/User B accounts.
+
+---
+
+## 2026-07-18 — Medication routine setup implemented
+
+- **Context:** Replace unapplied migration 002 with the approved routine schema
+  and add the onboarding/manage-routine flow.
+- **Decision:** Migration 002 now uses direct `user_id` ownership, an explicit
+  routine-only field set, owner-only CRUD RLS, and an index for each user's
+  routines. No later migration depended on the replaced schema.
+- **Data/safety impact:** Display names are user-provided routine labels, not a
+  clinical record. No notes, storage fields, zip codes, or model input were
+  added.
+- **Changed:** Migration 002, session-derived medication data functions,
+  onboarding/list/new/edit/delete routes, validation, focused tests, and the
+  manual medication test plan.
+- **Verified:** `npm run lint`, `npm run typecheck`, `npm run test`, and
+  `npm run build` pass. Live Supabase flow/RLS testing remains pending because
+  the untracked `.env.local` configuration is absent.
+- **Follow-up:** Apply migrations 001/002 in a non-production project and run
+  `docs/manual-medication-test.md` with synthetic accounts.

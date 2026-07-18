@@ -23,8 +23,9 @@ project. Do not use real health or medication data.
    /onboarding because User A has no medication.
 4. Sign out from Settings. Expected: redirect to /login?message=signed-out.
 5. Sign in as User A. Expected: redirect through /dashboard to /onboarding.
-6. Insert one synthetic medication for User A through an authenticated direct
-   Supabase query. Expected: a new visit to /onboarding redirects to /dashboard.
+6. Insert one synthetic medication routine for User A through an authenticated
+   direct Supabase query. Expected: a new visit to /onboarding redirects to
+   /dashboard.
 7. Visit each protected route while signed out: /onboarding, /dashboard, /doses,
    /checkins, /report, and /settings. Expected: each redirects to /login.
 
@@ -37,7 +38,7 @@ Execute each query while authenticated as User B and using User A record IDs.
 | profiles | select User A profile | no rows |
 | profiles | update User A preferences | zero rows updated |
 | medications | select User A medication | no rows |
-| medications | insert with User A profile_id | RLS rejection |
+| medications | insert with User A user_id | RLS rejection |
 | medications | update User A medication | zero rows updated |
 | medications | delete User A medication | zero rows deleted |
 

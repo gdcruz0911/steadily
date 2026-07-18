@@ -11,11 +11,11 @@ output is a **visit discussion summary**, not a clinical report.
 | Area | Fields | Stored in Supabase | Sent to GPT-5.6 by default |
 | --- | --- | --- | --- |
 | Account/profile | Supabase auth user ID, email (Auth only), email-verification state (Auth only), notification preferences, created/updated timestamps | Yes | No |
-| Medication | medication name, profile ID, created timestamp | Yes | No |
+| Medication routine | user ID, display name, color label, dose type, interval, optional loading-phase values, created/updated timestamps | Yes | No |
 | Dose | medication ID, scheduled timestamp, created timestamp | Yes | Relative timing only |
 | Check-in | dose ID, status, checked timestamp, created timestamp | Yes | Relative timing and structured status only |
 | Saved summary | selected relative window, summary text, model ID, payload version, created timestamp | Only after explicit Save summary action | Generation response only |
-| Excluded inputs | medication names, zip codes, account identifiers, free-text notes | Not collected in the MVP, except medication name as local Supabase data | No |
+| Excluded inputs | zip codes, account identifiers, storage notes, free-text clinical fields | Not collected in the MVP | No |
 
 Check-in status is a controlled enum, not free text. The first summary version
 contains no free-text notes.

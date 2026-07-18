@@ -16,6 +16,17 @@ auth/RLS verification, and feature workflows.
 periods remain future decisions. A DOM environment for future React Testing
 Library UI tests remains unapproved.
 
+**Migration decision:** `002_medications.sql` has not been applied to any
+Supabase project or shared environment. It is authorized to be replaced in
+place with the approved medication-routine schema using `user_id` and explicit
+owner-only RLS. No later migration depends on its former `profile_id`/`name`
+schema.
+
+**Medication setup:** Implemented routine create/view/edit/delete flows using
+session-derived ownership and narrowly scoped database functions. Static
+verification passes. The live 390px flow and owner-RLS checks await local
+Supabase configuration; see `docs/manual-medication-test.md`.
+
 **Verified:** `npm run lint`, `npm run typecheck`, `npm run test`, and
 `npm run build` pass. The manual signup/login/logout/route-protection/RLS plan
 is documented in `docs/manual-auth-rls-test.md`. Live verification is blocked

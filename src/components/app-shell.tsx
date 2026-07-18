@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 const navigationItems = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/medications", label: "Medications" },
   { href: "/doses", label: "Doses" },
   { href: "/checkins", label: "Check-ins" },
   { href: "/report", label: "Summary" },

@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 const protectedPaths = new Set([
   "/onboarding",
   "/dashboard",
+  "/medications",
   "/doses",
   "/checkins",
   "/report",
@@ -52,7 +53,12 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
   const { pathname } = request.nextUrl;
 
-  if (!protectedPaths.has(pathname)) {
+  const isProtectedPath = [...protectedPaths].some(
+    (protectedPath) =>
+      pathname === protectedPath || pathname.startsWith(`${protectedPath}/`),
+  );
+
+  if (!isProtectedPath) {
     return response;
   }
 
@@ -68,7 +74,7 @@ export async function updateSession(request: NextRequest) {
   const { data: medications } = await supabase
     .from("medications")
     .select("id")
-    .eq("profile_id", user.id)
+    .eq("user_id", user.id)
     .limit(1);
   const hasMedication = Boolean(medications?.length);
 

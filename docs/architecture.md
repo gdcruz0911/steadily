@@ -82,9 +82,10 @@ clinical claims.
 
 1. 001_profiles.sql: create profiles keyed to auth.users.id, with notification
    preferences plus created/updated timestamps and owner-only read/update RLS.
-2. 002_medications.sql: create medications with profile_id, name, and created
-   timestamp. Add the owner index and explicit owner-only CRUD RLS. Medication
-   names are never model input by default.
+2. 002_medications.sql: create personal medication routines with user_id,
+   display name, label, routine cadence, optional loading phase, and timestamps.
+   Add the owner index and explicit owner-only CRUD RLS. Display names are never
+   model input by default.
 3. 003_doses.sql: create doses owned through their medication, with a scheduled
    timestamp and timestamps.
 4. 004_checkins.sql: create checkins owned through their dose, with structured
@@ -121,9 +122,16 @@ erDiagram
   }
   MEDICATIONS {
     uuid id PK
-    uuid profile_id FK
-    text name
+    uuid user_id FK
+    text display_name
+    text color_label
+    text dose_type
+    int interval_days
+    bool has_loading_phase
+    int loading_dose_count
+    int loading_interval_days
     timestamptz created_at
+    timestamptz updated_at
   }
   DOSES {
     uuid id PK
