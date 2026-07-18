@@ -10,7 +10,7 @@ output is a **visit discussion summary**, not a clinical report.
 
 | Area | Fields | Stored in Supabase | Sent to GPT-5.6 by default |
 | --- | --- | --- | --- |
-| Account/profile | Supabase auth user ID, email (Auth only), email-verification state (Auth only), timezone, consent-policy version | Yes | No |
+| Account/profile | Supabase auth user ID, email (Auth only), email-verification state (Auth only), notification preferences, created/updated timestamps | Yes | No |
 | Medication | medication name, profile ID, created timestamp | Yes | No |
 | Dose | medication ID, scheduled timestamp, created timestamp | Yes | Relative timing only |
 | Check-in | dose ID, status, checked timestamp, created timestamp | Yes | Relative timing and structured status only |

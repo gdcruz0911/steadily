@@ -66,3 +66,23 @@ personal data; use synthetic examples only.
 - **Follow-up:** Configure Supabase and implement only approved migrations and
   authentication next. The npm audit reports two moderate findings; no forced
   remediation was applied.
+
+---
+
+## 2026-07-18 — Auth, profile, and access-control scaffolded
+
+- **Context:** Add email/password auth, verification handling, owner-only
+  profile/medication access, and medication-aware redirects.
+- **Decision:** Added migrations 001_profiles.sql and 002_medications.sql.
+  Profiles are created by a signup trigger. Browser and user-facing routes use
+  only public Supabase credentials; no service-role client exists.
+- **Data/safety impact:** The profile holds only notification preferences and
+  timestamps. Medication names remain local data and are never model input.
+  Auth responses do not echo account details.
+- **Changed:** Auth server actions, callback route, protected-route proxy,
+  login/logout UI, validation tests, migrations, and manual verification plan.
+- **Verified:** `npm run lint`, `npm run typecheck`, `npm run test`, and
+  `npm run build` pass. Live auth/RLS verification remains pending because no
+  untracked `.env.local` Supabase configuration is present.
+- **Follow-up:** Apply migrations to the configured non-production project and
+  execute `docs/manual-auth-rls-test.md` with synthetic User A/User B accounts.

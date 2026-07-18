@@ -80,10 +80,11 @@ clinical claims.
 
 ## First migration plan - not implemented
 
-1. 001_profiles.sql: create profiles keyed to auth.users.id, with timezone and
-   consent-policy version.
-2. 002_medications.sql: create medications with profile_id, name, and
-   timestamps. Medication names are never model input by default.
+1. 001_profiles.sql: create profiles keyed to auth.users.id, with notification
+   preferences plus created/updated timestamps and owner-only read/update RLS.
+2. 002_medications.sql: create medications with profile_id, name, and created
+   timestamp. Add the owner index and explicit owner-only CRUD RLS. Medication
+   names are never model input by default.
 3. 003_doses.sql: create doses owned through their medication, with a scheduled
    timestamp and timestamps.
 4. 004_checkins.sql: create checkins owned through their dose, with structured
@@ -114,8 +115,9 @@ erDiagram
   }
   PROFILES {
     uuid id PK_FK
-    text timezone
-    text consent_policy_version
+    jsonb notification_preferences
+    timestamptz created_at
+    timestamptz updated_at
   }
   MEDICATIONS {
     uuid id PK

@@ -1,10 +1,14 @@
-import { RouteScaffold } from "@/components/route-scaffold";
+import { redirect } from "next/navigation";
 
-export default function HomePage() {
-  return (
-    <RouteScaffold
-      description="A personal tracking space for preparing visit discussion summaries."
-      title="Steadily"
-    />
-  );
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  redirect(user ? "/dashboard" : "/login");
 }
