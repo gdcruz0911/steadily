@@ -1,27 +1,26 @@
 # Handoff
 
-**What works end to end:** Auth, protected routes, medication routines,
-official references, and dose tracking work against non-production Supabase.
-The check-in schema, owner-scoped server actions, due banner, structured
-completion/skipping, and dose-grouped history are implemented and deployed.
+**What works end to end:** Synthetic User A saved backdated doses, each of
+which created exactly one due 24h and one due 72h check-in. The dashboard
+banner, required six-score completion, explicit skipping, and dose-grouped
+history were exercised. Synthetic User B could not see User A’s check-ins in
+the app. Both test sessions were signed out afterward.
 
-**Changed today:** Added `006_checkins.sql`: controlled 24h/72h pending rows
-are created transactionally when a dose is saved; completion requires six 0–5
-scores and skipping is explicit. Added `007_checkins_data_api_grants.sql` to
-remove default anon access and leave authenticated DML only. Added check-in
-validation, UI, data access, and a manual synthetic-account test plan.
+**Verified today:** At a 390px viewport override, the check-in forms retained
+labels above every score control and had no horizontal overflow. Omitting a
+score showed visible field errors. A completed check-in kept a completion time;
+a skipped check-in stored no scores and left the due list. Only synthetic data
+was used.
 
-**Verified:** Remote migration history matches local 001–007. Check-ins have
-RLS enabled, four owner policies, zero anon grants, and exactly
-DELETE/INSERT/SELECT/UPDATE for authenticated. `npm run lint`, type-check,
-tests (13), and production build pass. The first 006 apply stopped before
-schema changes because `window` required SQL quoting; it was corrected and
-applied after a clean dry run.
+**Observed defect:** The history’s “Dose recorded” timestamp displays the
+check-in’s 24-hour scheduled time, rather than the original dose administration
+time, for a completed/skipped pair. The history is still grouped by dose. No
+application code was changed in this documentation-only checkpoint.
 
-**Remaining verification:** Run `docs/manual-checkin-test.md` at 390px with the
-existing synthetic User A/User B accounts. This confirms the live trigger,
-due/overdue states, completion/skipping, and two-user behavior through normal
-sessions. No service-role key is used.
+**Remaining verification:** The normal-session direct Supabase SELECT/INSERT/
+UPDATE/DELETE attempts against User A’s check-ins were not rerun today. The UI
+isolation and deployed RLS/grant inspection passed; keep the documented direct
+check in a future security pass.
 
-**Exact next smallest task:** Execute the documented synthetic check-in manual
-verification; do not change migrations 001–007.
+**Exact next smallest task:** Fix the check-in history dose timestamp, add a
+regression test, then rerun the documented direct two-user check-in RLS test.

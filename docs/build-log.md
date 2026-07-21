@@ -204,3 +204,27 @@ personal data; use synthetic examples only.
   after apply. Read-only remote schema verification found RLS enabled, four
   owner policies, zero anon grants, and exactly authenticated DML grants.
 - **Follow-up:** Keep the explicit grant model for each later Data API table.
+
+---
+
+## 2026-07-21 - Synthetic check-in manual verification
+
+- **Context:** Execute `docs/manual-checkin-test.md` with the existing
+  synthetic User A/User B accounts after migrations 006 and 007 were deployed.
+- **Verified:** A synthetic backdated User A dose created exactly one due 24h
+  and one due 72h check-in, with a dashboard count of two. Completion rejected
+  omitted scores with visible field errors and accepted all six 0–5 scores.
+  Explicit skipping removed the remaining due check-in and left it `skipped` in
+  history. At the 390px viewport override, labels remained above controls and
+  page content had no horizontal overflow. User B’s dashboard and check-in
+  history contained none of User A’s synthetic records.
+- **Observed:** The history displays the 24-hour scheduled timestamp as “Dose
+  recorded” for a completed/skipped pair instead of the original administration
+  timestamp. Grouping and statuses were otherwise correct. No application code
+  was changed in this manual-verification checkpoint.
+- **Not rerun:** Direct authenticated Data API SELECT/INSERT/UPDATE/DELETE
+  attempts against User A’s check-ins. Remote RLS/policy/grant inspection and
+  in-app User B isolation remain the available evidence.
+- **Data/safety impact:** Only synthetic account and tracking data were used;
+  test sessions were signed out. No credentials, identifiers, or health details
+  were recorded.
