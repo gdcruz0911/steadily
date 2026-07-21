@@ -16,11 +16,14 @@ the architecture plan and has not been created.
 and `npm run build` pass. Live Supabase, two-user RLS, and 390px checks remain
 blocked by absent local public Supabase variables.
 
+**Committed:** Medication Reference `e75ad4f`; dose tracking `59b62e4`. Both
+were pushed to `origin/master`.
+
 **Blockers:** `.env.local` is absent. Configure
 `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, apply migrations
 001-003 to a non-production Supabase project, and use synthetic User A/User B
 accounts. This is required for live auth, 390px, DailyMed, and RLS checks. Do
 not add or expose a service-role key.
 
-**Exact next smallest task:** Commit/push this dose slice, then configure
-Supabase and execute `docs/manual-dose-test.md`.
+**Exact next smallest task:** Configure Supabase and execute
+`docs/manual-dose-test.md` with synthetic users.
