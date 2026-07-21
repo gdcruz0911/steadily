@@ -1,26 +1,27 @@
 # Handoff
 
-**What works end to end:** Email/password auth, protected routes, personal
-medication routines, consent-gated official references, and dose tracking work
-against the linked non-production Supabase project. Data API access and RLS
-were verified with synthetic User A/User B sessions.
+**What works end to end:** Auth, protected routes, medication routines,
+official references, and dose tracking work against non-production Supabase.
+The check-in schema, owner-scoped server actions, due banner, structured
+completion/skipping, and dose-grouped history are implemented and deployed.
 
-**Changed today:** Applied `005_data_api_grants.sql`. It revokes existing
-`authenticated` table grants, then grants only SELECT/INSERT/UPDATE/DELETE on
-profiles, medications, medication references, and doses; RLS remains enabled
-and anon receives no grant. The future check-in migration is now
-`006_checkins.sql`.
+**Changed today:** Added `006_checkins.sql`: controlled 24h/72h pending rows
+are created transactionally when a dose is saved; completion requires six 0–5
+scores and skipping is explicit. Added `007_checkins_data_api_grants.sql` to
+remove default anon access and leave authenticated DML only. Added check-in
+validation, UI, data access, and a manual synthetic-account test plan.
 
-**Verified:** Remote migration history matches local 001–005. The safe dry run
-planned only 005 before apply. Lint, type-check, tests (10), and production
-build passed. Synthetic User B could not view User A’s medication/reference or
-dose history, and an authenticated public-key API insert for User A’s
-medication was denied; User A’s dose count was unchanged. No credentials,
-identifiers, or real data were recorded.
+**Verified:** Remote migration history matches local 001–007. Check-ins have
+RLS enabled, four owner policies, zero anon grants, and exactly
+DELETE/INSERT/SELECT/UPDATE for authenticated. `npm run lint`, type-check,
+tests (13), and production build pass. The first 006 apply stopped before
+schema changes because `window` required SQL quoting; it was corrected and
+applied after a clean dry run.
 
-**Failures/blockers:** None. `.env.local` remains untracked; no service-role
-key is used. The two synthetic accounts and records remain in non-production
-Supabase for later manual checks.
+**Remaining verification:** Run `docs/manual-checkin-test.md` at 390px with the
+existing synthetic User A/User B accounts. This confirms the live trigger,
+due/overdue states, completion/skipping, and two-user behavior through normal
+sessions. No service-role key is used.
 
-**Exact next smallest task:** Implement and verify only the approved
-`006_checkins.sql` slice; do not change the dose or grant migrations.
+**Exact next smallest task:** Execute the documented synthetic check-in manual
+verification; do not change migrations 001–007.

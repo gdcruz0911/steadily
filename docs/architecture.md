@@ -101,15 +101,18 @@ clinical claims.
 5. 005_data_api_grants.sql: revoke existing authenticated table privileges, then
    grant only SELECT, INSERT, UPDATE, and DELETE on profiles, medications,
    medication references, and doses. RLS remains enabled; anon receives nothing.
-6. 006_checkins.sql: after doses are verified, create user-owned, dose-linked
-   24-hour and 72-hour controlled check-ins. A dose creates pending rows
-   transactionally; due and overdue state are derived, not stored.
-7. 007_visit_discussion_summaries.sql: create optional user-saved summaries
+6. 006_checkins.sql: create user-owned, dose-linked 24-hour and 72-hour
+   controlled check-ins. A dose creates pending rows transactionally; due and
+   overdue state are derived, not stored.
+7. 007_checkins_data_api_grants.sql: revoke all anon and authenticated table
+   privileges on check-ins, then grant only authenticated SELECT, INSERT,
+   UPDATE, and DELETE. RLS remains enabled.
+8. 008_visit_discussion_summaries.sql: create optional user-saved summaries
    with profile_id, selected-window metadata, generated text, model ID, and
    payload version. Generation alone does not create a row.
-8. 008_rls_policies.sql: enable RLS, add explicit per-operation policies with
+9. 009_rls_policies.sql: enable RLS, add explicit per-operation policies with
    comments for every user-owned table, and add ownership/date indexes.
-9. 009_deletion_support.sql: implement reviewed deletion support only after the
+10. 010_deletion_support.sql: implement reviewed deletion support only after the
    retention policy and backup window are approved.
 
 A separate summary_generation_events table is not planned. Add one only if a

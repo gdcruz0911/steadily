@@ -33,5 +33,6 @@ export async function createDose(
 
   revalidatePath("/doses");
   revalidatePath("/dashboard");
+  revalidatePath("/checkins");
   redirect("/doses");
 }

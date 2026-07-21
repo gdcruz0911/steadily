@@ -171,3 +171,36 @@ personal data; use synthetic examples only.
   A’s dose count was unchanged.
 - **Follow-up:** Implement only approved `006_checkins.sql` after this
   checkpoint. The temporary local verifier was removed after the pass.
+
+---
+
+## 2026-07-21 - Structured check-ins deployed
+
+- **Decision:** Add dose-linked 24-hour and 72-hour pending check-ins through
+  an `AFTER INSERT` dose trigger, so both rows are created in the same
+  transaction as a saved dose. Completion requires six 0–5 scores; skipping is
+  explicit. Due and overdue are derived in the UI only.
+- **Safety:** Check-ins contain no free text, notes, medication instructions,
+  diagnosis, or risk output. Server actions derive ownership from the session.
+- **Changed:** `006_checkins.sql`, check-in data access/actions, dashboard due
+  banner, check-in UI, Zod validation/tests, and manual verification plan.
+- **Verified:** The first remote apply rejected unquoted SQL identifier
+  `window` before any schema change. The field name was quoted, a new dry run
+  planned only 006, and remote history then matched 001–006. `npm run lint`,
+  `npm run typecheck`, `npm run test` (13 tests), and `npm run build` passed.
+- **Follow-up:** Complete the synthetic 390px and two-user manual check-in
+  plan; no live browser session was available during this slice.
+
+---
+
+## 2026-07-21 - Check-ins Data API grants corrected
+
+- **Context:** Read-only remote inspection found default anon table grants on
+  newly created check-ins, despite RLS being enabled.
+- **Decision:** Add `007_checkins_data_api_grants.sql` rather than rewriting
+  applied migration 006. Revoke all anon and authenticated privileges, then
+  grant only authenticated SELECT, INSERT, UPDATE, and DELETE.
+- **Verified:** Safe dry run planned only 007; remote history matched 001–007
+  after apply. Read-only remote schema verification found RLS enabled, four
+  owner policies, zero anon grants, and exactly authenticated DML grants.
+- **Follow-up:** Keep the explicit grant model for each later Data API table.
