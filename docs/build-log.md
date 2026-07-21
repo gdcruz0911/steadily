@@ -265,3 +265,17 @@ personal data; use synthetic examples only.
   entry, never stored, and never logged. Only synthetic records were used.
 - **Changed:** Removed the one-off local verifier after the pass and recorded
   the verification evidence in the public data-handling documentation.
+
+---
+
+## 2026-07-21 - Public README documented
+
+- **Context:** Add a repository-accurate public entry point without introducing
+  deployment infrastructure, a license, or product scope.
+- **Changed:** Added `README.md` with current features, local setup, localhost
+  Supabase Auth redirects, safe non-production migration steps, verification
+  commands, product/privacy boundaries, curated Updates limitations, and the
+  verified two-user RLS model.
+- **Verified:** No Markdown linter or link-checker is configured. A local
+  structural check confirmed the required README sections and that all six
+  Updates links match the version-controlled curated source URLs.
