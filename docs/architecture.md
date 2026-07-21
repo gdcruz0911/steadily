@@ -7,9 +7,11 @@
 3. They record structured check-ins for doses and review their own timeline.
 4. They choose a 7-day or 30-day window to review and locally copy a factual
    personal record for a clinician visit discussion.
-5. They choose a relative date window, preview the minimized structured data, and
+5. They can browse a fixed, non-personalized psoriasis Research & Updates pilot
+   drawn from curated authoritative public sources.
+6. They choose a relative date window, preview the minimized structured data, and
    explicitly consent to generate a visit discussion summary.
-6. The server generates and renders the summary. It is saved only after the
+7. The server generates and renders the summary. It is saved only after the
    person selects Save summary.
 
 Steadily is a personal tracking tool. It does not diagnose, recommend
@@ -67,6 +69,7 @@ clinical claims.
 | /doses | Dose tracking | Authenticated owner |
 | /checkins | Structured check-ins | Authenticated owner |
 | /visit-prep | Factual 7-day/30-day personal record and local copy action | Authenticated owner |
+| /updates | Fixed, non-personalized psoriasis Research & Updates pilot | Authenticated owner |
 | /report | Summary preview, consent, generation, and explicit saving | Authenticated owner |
 | /settings | Data deletion controls and retention explanation | Authenticated owner |
 | /medications/[id] | Edit a personal medication routine | Authenticated owner |
@@ -80,6 +83,9 @@ clinical claims.
 - **Visit prep:** owner-scoped server retrieval for medication, dose, and
   check-in records plus a browser-local plain-text copy action. It stores and
   sends no generated visit-prep text.
+- **Research & updates:** locally curated, version-controlled source metadata
+  and short neutral descriptions. The pilot has no profile condition, database
+  storage, external runtime fetch, background job, or personalized ranking.
 - **Summary:** SummaryWindowForm, DataPreview, ConsentDialog, and
   VisitDiscussionSummary. The save control is separate from generation.
 - **Server/domain:** authenticated Supabase access, Zod validation, payload

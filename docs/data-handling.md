@@ -16,6 +16,7 @@ output is a **visit discussion summary**, not a clinical report.
 | Dose | user ID, medication ID, administered timestamp, optional controlled injection site, created/updated timestamps | Yes | Relative timing only |
 | Check-in | user ID, dose ID, 24h/72h window, scheduled/completed timestamps, pending/completed/skipped status, six nullable 0–5 structured scores, created/updated timestamps | Yes | Relative timing, controlled status, and structured scores only |
 | Visit prep | A browser-rendered factual selection of the person’s existing medication, dose, and check-in records for a 7-day or 30-day window | No new data; reads existing owner-scoped records only | No |
+| Research & updates | Fixed local psoriasis pilot metadata: source organization, date label, category, short neutral description, and public source URL | No database storage or user-profile condition | No |
 | Saved summary | selected relative window, summary text, model ID, payload version, created timestamp | Only after explicit Save summary action | Generation response only |
 | Excluded inputs | zip codes, account identifiers, storage notes, free-text clinical fields | Not collected in the MVP | No |
 
@@ -60,6 +61,21 @@ Steadily does not store that text, send it to an LLM or external API, run
 background processing, or treat it as a generated visit discussion summary.
 The page states that it is a personal record for discussion with a clinician,
 not medical advice.
+
+## Research & Updates pilot
+
+The protected Research & Updates page is a fixed local pilot with psoriasis as
+its single topic. It contains six version-controlled items from FDA, NIH/NIAMS,
+ClinicalTrials.gov, and PubMed-indexed peer-reviewed journal records. Each item
+includes source organization, a publication or update date label, category, a
+brief neutral description, and an external link.
+
+The pilot does not read or store a person’s condition, medication, tracking
+history, profile data, or identifiers. It has no LLM, RAG, external runtime
+fetch, background job, personalized ranking, notification, or database table.
+It does not provide medication advice, outcome predictions, or clinical
+interpretation. The static entries may be revised only through a reviewed code
+change with source verification.
 
 ## Consent language
 

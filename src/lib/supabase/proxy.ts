@@ -8,6 +8,7 @@ const protectedPaths = new Set([
   "/doses",
   "/checkins",
   "/visit-prep",
+  "/updates",
   "/report",
   "/settings",
 ]);
