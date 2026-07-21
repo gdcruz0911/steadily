@@ -66,6 +66,8 @@ clinical claims.
 | /checkins | Structured check-ins | Authenticated owner |
 | /report | Summary preview, consent, generation, and explicit saving | Authenticated owner |
 | /settings | Data deletion controls and retention explanation | Authenticated owner |
+| /medications/[id] | Edit a personal medication routine | Authenticated owner |
+| /medications/[id]/reference | Consent-gated official-source companion | Authenticated owner |
 
 ## Component boundaries
 
@@ -77,6 +79,9 @@ clinical claims.
 - **Server/domain:** authenticated Supabase access, Zod validation, payload
   minimization, GPT-5.6 call, and optional saved-summary persistence.
 - **Safety copy:** shared product-boundary and consent language.
+- **Official references:** a server-only source-adapter interface; DailyMed is
+  the first adapter. Searches are consent-gated, candidates are transient, and
+  a SET ID is revalidated server-side before a person can confirm a reference.
 
 ## First migration plan - not implemented
 
@@ -86,16 +91,19 @@ clinical claims.
    display name, label, routine cadence, optional loading phase, and timestamps.
    Add the owner index and explicit owner-only CRUD RLS. Display names are never
    model input by default.
-3. 003_doses.sql: create doses owned through their medication, with a scheduled
+3. 003_medication_references.sql: create one optional official-source reference
+   per medication routine, with source metadata, confirmation status, and
+   RLS through the medication owner. Candidate responses are never stored.
+4. 004_doses.sql: create doses owned through their medication, with a scheduled
    timestamp and timestamps.
-4. 004_checkins.sql: create checkins owned through their dose, with structured
+5. 005_checkins.sql: create checkins owned through their dose, with structured
    status and recorded timestamp.
-5. 005_visit_discussion_summaries.sql: create optional user-saved summaries
+6. 006_visit_discussion_summaries.sql: create optional user-saved summaries
    with profile_id, selected-window metadata, generated text, model ID, and
    payload version. Generation alone does not create a row.
-6. 006_rls_policies.sql: enable RLS, add explicit per-operation policies with
+7. 007_rls_policies.sql: enable RLS, add explicit per-operation policies with
    comments for every user-owned table, and add ownership/date indexes.
-7. 007_deletion_support.sql: implement reviewed deletion support only after the
+8. 008_deletion_support.sql: implement reviewed deletion support only after the
    retention policy and backup window are approved.
 
 A separate summary_generation_events table is not planned. Add one only if a
@@ -108,6 +116,7 @@ erDiagram
   AUTH_USERS ||--|| PROFILES : has
   PROFILES ||--o{ MEDICATIONS : owns
   MEDICATIONS ||--o{ DOSES : contains
+  MEDICATIONS ||--o| MEDICATION_REFERENCES : has
   DOSES ||--o{ CHECKINS : contains
   PROFILES ||--o{ VISIT_DISCUSSION_SUMMARIES : owns
 
@@ -138,6 +147,20 @@ erDiagram
     uuid medication_id FK
     timestamptz scheduled_for
     timestamptz created_at
+  }
+  MEDICATION_REFERENCES {
+    uuid id PK
+    uuid medication_id FK
+    text source_provider
+    text source_identifier
+    text source_url
+    text official_title
+    text confirmed_product_name
+    text formulation_or_route
+    date source_revision_date
+    timestamptz retrieved_at
+    timestamptz user_confirmed_at
+    text status
   }
   CHECKINS {
     uuid id PK

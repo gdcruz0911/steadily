@@ -1,33 +1,30 @@
 # Handoff
 
-**Status:** Auth and access-control implementation complete; live Supabase
-verification awaits local project configuration.
+**What works end to end:** The App Router shell, email/password auth flow,
+verification callback, logout, protected-route redirects, medication routine
+create/view/edit/delete, and the consent-gated Medication Reference flow are
+implemented. The reference flow searches DailyMed server-side after consent,
+shows transient candidates, requires “This is my medication,” revalidates the
+SET ID server-side, and saves only confirmed source metadata. It also supports
+unavailable and advanced DailyMed SET-ID/official-URL states.
 
-**Completed:** Next.js App Router scaffold, strict TypeScript, Tailwind and
-shadcn/ui configuration, Supabase browser/server factories, email/password
-auth flow, verification callback, logout, protected route redirects, and the
-profiles/medications migrations with RLS. `.env.local` is gitignored.
+**Changed today:** Added `003_medication_references.sql` with one reference per
+medication and owner-only RLS through `medications.user_id`; added
+`/medications/[id]/reference`, a DailyMed adapter, data functions, focused
+tests, and a manual reference/RLS plan. Architecture now reserves
+`004_doses.sql` and `005_checkins.sql`. Data-handling documents consent,
+transient candidate handling, retention, and adapter limits.
 
-**Not started:** Applying migrations to a configured Supabase project, live
-auth/RLS verification, and feature workflows.
+**Verified:** `npm run lint`, `npm run typecheck`, `npm run test` (8 tests),
+and `npm run build` passed. No failures in those checks. The new work is staged
+but uncommitted because commit authorization was declined.
 
-**Decision needed:** Configure the local Supabase project and apply migrations
-001/002 before live verification. Exact dose/check-in semantics and retention
-periods remain future decisions. A DOM environment for future React Testing
-Library UI tests remains unapproved.
+**Blockers:** `.env.local` is absent. Configure
+`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, apply migrations
+001-003 to a non-production Supabase project, and use synthetic User A/User B
+accounts. This is required for live auth, 390px, DailyMed, and RLS checks. Do
+not add or expose a service-role key.
 
-**Migration decision:** `002_medications.sql` has not been applied to any
-Supabase project or shared environment. It is authorized to be replaced in
-place with the approved medication-routine schema using `user_id` and explicit
-owner-only RLS. No later migration depends on its former `profile_id`/`name`
-schema.
-
-**Medication setup:** Implemented routine create/view/edit/delete flows using
-session-derived ownership and narrowly scoped database functions. Static
-verification passes. The live 390px flow and owner-RLS checks await local
-Supabase configuration; see `docs/manual-medication-test.md`.
-
-**Verified:** `npm run lint`, `npm run typecheck`, `npm run test`, and
-`npm run build` pass. The manual signup/login/logout/route-protection/RLS plan
-is documented in `docs/manual-auth-rls-test.md`. Live verification is blocked
-only by the absent untracked `.env.local` configuration.
+**Exact next smallest task:** Configure the two public Supabase variables,
+apply migrations 001-003 in a non-production project, then execute
+`docs/manual-medication-reference-test.md` with synthetic users.

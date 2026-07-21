@@ -107,3 +107,28 @@ personal data; use synthetic examples only.
   the untracked `.env.local` configuration is absent.
 - **Follow-up:** Apply migrations 001/002 in a non-production project and run
   `docs/manual-medication-test.md` with synthetic accounts.
+# 2026-07-18 - Medication Reference scaffold
+
+- **Decision:** Use a dedicated `/medications/[id]/reference` route so routine
+  editing stays separate from a consent-gated public-source companion.
+- **Decision:** Add `003_medication_references.sql`; do not rewrite prior
+  migrations. Future dose/check-in migrations are `004_doses.sql` and
+  `005_checkins.sql`.
+- **Decision:** DailyMed is the sole implemented adapter. Automatic lookup is
+  server-side, requires per-lookup consent, and sends only the routine name and
+  selected form/route context. Candidate data is transient.
+- **Safety:** A source becomes confirmed only after explicit user confirmation
+  and a server-side SET-ID revalidation. No source guide text, packaging image,
+  raw query, or raw response is stored.
+- **Verification:** `npm run lint`, `npm run typecheck`, `npm run test` (8
+  tests), and `npm run build` passed. Live 390px and two-user RLS checks await
+  synthetic test users in the configured local Supabase project.
+- **Codex acceleration:** Implemented the consent-gated route, DailyMed adapter,
+  owner-scoped data access, migration, focused tests, and operational docs in
+  one staged slice.
+- **Important decision:** Candidate data stays transient; only a
+  server-revalidated SET ID confirmed by the person may create stored metadata.
+- **Commits:** No commit was created for this staged reference slice because
+  commit authorization was declined. Prior related commits: `3c6fdcb` (routine
+  setup), `dd75f55` (auth and access control), `16c761c` (app shell), and
+  `77f0fa4` (foundation).

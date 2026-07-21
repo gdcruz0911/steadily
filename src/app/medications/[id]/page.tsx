@@ -28,6 +28,12 @@ export default async function MedicationPage({
       title="Edit medication routine"
     >
       <div className="space-y-8">
+        <a
+          className="inline-flex min-h-12 items-center rounded-xl border bg-white px-4 text-sm font-semibold text-[var(--foreground)]"
+          href={`/medications/${medication.id}/reference`}
+        >
+          Official reference
+        </a>
         <MedicationRoutineForm
           action={updateMedication.bind(null, medication.id)}
           initialMedication={medication}

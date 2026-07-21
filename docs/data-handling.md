@@ -12,6 +12,7 @@ output is a **visit discussion summary**, not a clinical report.
 | --- | --- | --- | --- |
 | Account/profile | Supabase auth user ID, email (Auth only), email-verification state (Auth only), notification preferences, created/updated timestamps | Yes | No |
 | Medication routine | user ID, display name, color label, dose type, interval, optional loading-phase values, created/updated timestamps | Yes | No |
+| Official medication reference | medication ID, DailyMed provider, SET ID, official URL, title, confirmed product/form or route, source date, retrieved/confirmed timestamps, status | Only after explicit confirmation or an unavailable choice | No |
 | Dose | medication ID, scheduled timestamp, created timestamp | Yes | Relative timing only |
 | Check-in | dose ID, status, checked timestamp, created timestamp | Yes | Relative timing and structured status only |
 | Saved summary | selected relative window, summary text, model ID, payload version, created timestamp | Only after explicit Save summary action | Generation response only |
@@ -57,6 +58,41 @@ outcome, never raw model input/output or health details.
 - Do not log raw tracking data, model payloads, generated summaries,
   authorization headers, or secrets. Operational logs use request IDs and
   non-sensitive error classes.
+
+## Consented official-source lookup
+
+The Medication Reference feature uses a server-only DailyMed adapter. It does
+not use GPT-5.6 and does not send a person’s Supabase ID, name, email, dose
+history, check-ins, symptoms, notes, profile data, or authentication data to
+DailyMed.
+
+Before an automatic lookup, the person must explicitly agree to this language:
+
+> To locate public official medication information, Steadily will send the
+> medicine name and selected form/route to DailyMed. We do not send your name,
+> dose history, symptoms, notes, or profile information.
+
+After consent, the server calls DailyMed’s public `spls` search endpoint with
+the routine name. The selected form or route is used only to narrow the
+candidate list because DailyMed’s documented search endpoint does not expose a
+form or route query parameter. The browser receives only the candidate fields
+needed for review: title, product/formulation, route when available, labeler or
+manufacturer when available, source date, SET ID, and official link.
+
+The candidate list is transient. Steadily does not store raw search queries,
+search responses, source-guide bodies, packaging images, or any record of the
+lookup itself. A candidate becomes a stored reference only after the person
+reviews the official link and taps “This is my medication.” The server then
+uses the SET ID to retrieve and revalidate the official record before storing
+only the confirmed metadata used by the reference card. If no candidate is
+correct, the person can mark the reference unavailable; that status stores no
+source metadata. An advanced path accepts only a DailyMed SET ID or an official
+DailyMed URL and still requires the same explicit confirmation after review.
+
+The adapter interface permits future official sources such as FDA or FDALabel,
+but no other source is enabled in this release. It makes HTTPS GET requests
+only, never uploads data, never accesses packaging images, and never derives a
+match from an image or a routine name alone.
 
 ## Demo and test data
 
