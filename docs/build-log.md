@@ -248,3 +248,20 @@ personal data; use synthetic examples only.
   `npm run build` passed.
 - **Follow-up:** Rerun the documented direct normal-session two-user check-in
   RLS test in a future security pass.
+
+---
+
+## 2026-07-21 - Direct check-in RLS DML verification
+
+- **Context:** Close the remaining direct two-user check-in authorization
+  proof using the existing synthetic accounts and a one-off public-client
+  verifier.
+- **Verified:** User B could not SELECT, UPDATE, or DELETE User A’s check-in;
+  each request returned no target rows. User B’s INSERT referencing User A’s
+  dose was denied by RLS. User A’s check-in records remained unchanged after
+  all attempts.
+- **Data/safety impact:** The verifier used only the public Supabase key and
+  normal authenticated sessions. Credentials and identifiers were hidden at
+  entry, never stored, and never logged. Only synthetic records were used.
+- **Changed:** Removed the one-off local verifier after the pass and recorded
+  the verification evidence in the public data-handling documentation.

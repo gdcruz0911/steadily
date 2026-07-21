@@ -33,6 +33,12 @@ with SELECT, INSERT, UPDATE, and DELETE privileges. Anonymous sessions receive
 no table privilege, and the four explicit owner-only RLS policies are still
 required for every row operation.
 
+The deployed non-production project has been verified with two synthetic,
+normal authenticated public-client sessions: User B could not select, insert,
+update, or delete User A’s check-ins, including an insert linked to User A’s
+dose. User A’s records were unchanged after those attempts. This verification
+used no service-role key and retained no test credentials.
+
 Dose records contain no dosage amount, instructions, clinical drug details, or
 free text. A calculated routine date is derived from the latest recorded dose
 and the saved medication interval; it is never stored as a dose field.
