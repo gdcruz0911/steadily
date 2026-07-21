@@ -228,3 +228,23 @@ personal data; use synthetic examples only.
 - **Data/safety impact:** Only synthetic account and tracking data were used;
   test sessions were signed out. No credentials, identifiers, or health details
   were recorded.
+
+---
+
+## 2026-07-21 - Check-in history recorded-time correction
+
+- **Context:** Manual synthetic-account testing showed the history could label
+  a check-in’s scheduled time as “Dose recorded.”
+- **Decision:** Normalize the dose and medication relation as either the
+  singular or array response shape before mapping history. Use
+  `doses.administered_at` for Dose recorded; keep `checkins.scheduled_at`
+  explicitly labeled Scheduled.
+- **Data/safety impact:** No data collection, schema, RLS, external request,
+  or user flow changed. Verification used existing synthetic records only.
+- **Changed:** `src/db/checkins.ts` and its focused mapping regression test.
+- **Verified:** At 390px, User A history displayed Jul 18 and Jul 17 as Dose
+  recorded, and the 24h/72h values as Scheduled, with no horizontal overflow.
+  `npm run lint`, `npm run typecheck`, `npm run test` (7 files, 14 tests), and
+  `npm run build` passed.
+- **Follow-up:** Rerun the documented direct normal-session two-user check-in
+  RLS test in a future security pass.

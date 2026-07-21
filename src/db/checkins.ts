@@ -38,8 +38,11 @@ type CheckinRow = {
   dose_id: string;
   doses: Array<{
     administered_at: string;
-    medications: Array<{ display_name: string }> | null;
-  }> | null;
+    medications: Array<{ display_name: string }> | { display_name: string } | null;
+  }> | {
+    administered_at: string;
+    medications: Array<{ display_name: string }> | { display_name: string } | null;
+  } | null;
   fatigue: number | null;
   fever: number | null;
   gi_symptoms: number | null;
@@ -65,7 +68,10 @@ async function getAuthenticatedUserId(supabase: SupabaseClient) {
 }
 
 function toCheckinRecord(row: CheckinRow): CheckinRecord {
-  const dose = row.doses?.[0];
+  const dose = Array.isArray(row.doses) ? row.doses[0] : row.doses;
+  const medication = Array.isArray(dose?.medications)
+    ? dose.medications[0]
+    : dose?.medications;
 
   return {
     administeredAt: dose?.administered_at ?? row.scheduled_at,
@@ -73,7 +79,7 @@ function toCheckinRecord(row: CheckinRow): CheckinRecord {
     createdAt: row.created_at,
     doseId: row.dose_id,
     id: row.id,
-    medicationName: dose?.medications?.[0]?.display_name ?? "Medication routine",
+    medicationName: medication?.display_name ?? "Medication routine",
     scheduledAt: row.scheduled_at,
     scores: {
       fatigue: row.fatigue,

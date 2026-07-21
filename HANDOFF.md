@@ -1,26 +1,24 @@
 # Handoff
 
-**What works end to end:** Synthetic User A saved backdated doses, each of
-which created exactly one due 24h and one due 72h check-in. The dashboard
-banner, required six-score completion, explicit skipping, and dose-grouped
-history were exercised. Synthetic User B could not see User A’s check-ins in
-the app. Both test sessions were signed out afterward.
+**What works end to end:** Synthetic User A backdated doses create one pending
+24h and one 72h check-in. The dashboard banner, six-score completion, explicit
+skipping, and dose-grouped history work. History now labels the original dose
+administration time as “Dose recorded” and labels the 24h/72h times as
+“Scheduled.”
 
-**Verified today:** At a 390px viewport override, the check-in forms retained
-labels above every score control and had no horizontal overflow. Omitting a
-score showed visible field errors. A completed check-in kept a completion time;
-a skipped check-in stored no scores and left the due list. Only synthetic data
-was used.
+**Changed today:** Normalized the check-in query’s dose/medication relation
+shape in `src/db/checkins.ts` and added a focused regression test. No schema,
+RLS, migration, data flow, or UI feature changed.
 
-**Observed defect:** The history’s “Dose recorded” timestamp displays the
-check-in’s 24-hour scheduled time, rather than the original dose administration
-time, for a completed/skipped pair. The history is still grouped by dose. No
-application code was changed in this documentation-only checkpoint.
+**Verified:** At 390px, synthetic User A history showed Jul 18/Jul 17 as Dose
+recorded and the corresponding 24h/72h values as Scheduled, with no horizontal
+overflow. `npm run lint`, `npm run typecheck`, `npm run test` (7 files, 14
+tests), and `npm run build` passed. Only synthetic data was used.
 
-**Remaining verification:** The normal-session direct Supabase SELECT/INSERT/
-UPDATE/DELETE attempts against User A’s check-ins were not rerun today. The UI
-isolation and deployed RLS/grant inspection passed; keep the documented direct
-check in a future security pass.
+**Remaining verification:** Normal-session direct Supabase
+SELECT/INSERT/UPDATE/DELETE cross-user attempts against check-ins were not
+rerun; deployed RLS/grant inspection and in-app User B isolation remain the
+available evidence.
 
-**Exact next smallest task:** Fix the check-in history dose timestamp, add a
-regression test, then rerun the documented direct two-user check-in RLS test.
+**Exact next smallest task:** Rerun the documented direct two-user check-in
+RLS test using normal authenticated sessions.
