@@ -62,6 +62,15 @@ background processing, or treat it as a generated visit discussion summary.
 The page states that it is a personal record for discussion with a clinician,
 not medical advice.
 
+## Medication Hub
+
+Medication Hub reads existing owner-scoped medication routines, recorded doses,
+pending check-ins, and official-reference metadata to present concise dashboard
+cards. It does not create a table, persist a dashboard summary, send data to an
+external service, or store a profile condition. Counts reflect only the stored
+`pending` check-in status; the Hub does not infer missed doses, calculate
+adherence, score symptoms, or provide clinical recommendations.
+
 ## Research & Updates pilot
 
 The protected Research & Updates page is a fixed local pilot with psoriasis as

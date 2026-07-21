@@ -80,6 +80,9 @@ clinical claims.
 - **Route shells:** authentication gate, light app layout, loading, and errors.
 - **Tracking:** MedicationForm, DoseForm, CheckinForm, and CheckinTimeline;
   all work with structured data.
+- **Medication hub:** owner-scoped dashboard aggregation of existing medication,
+  dose, pending-check-in, and official-reference records. It displays factual
+  values only and does not calculate adherence, missed doses, or clinical state.
 - **Visit prep:** owner-scoped server retrieval for medication, dose, and
   check-in records plus a browser-local plain-text copy action. It stores and
   sends no generated visit-prep text.
