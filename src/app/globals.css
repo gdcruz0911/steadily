@@ -2,14 +2,21 @@
 
 :root {
   --background: #f4f8f8;
+  --surface: #ffffff;
   --surface-muted: #eaf1f0;
+  --surface-subtle: #f8fbfb;
   --foreground: #172321;
   --muted-foreground: #52615f;
   --accent: #0f5f59;
   --accent-hover: #0a4844;
+  --accent-soft: #d9ebe8;
   --focus-ring: #0f766e;
   --error: #b42318;
+  --error-soft: #fce8e6;
   --success: #176b4d;
+  --success-soft: #e4f2e9;
+  --warning: #8a5a00;
+  --warning-soft: #fff3d6;
   --border: #cdd9d7;
 }
 
@@ -19,15 +26,47 @@
 
 html {
   background: var(--background);
+  overflow-x: hidden;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+  min-width: 320px;
 }
 
 ::selection {
   background: var(--surface-muted);
   color: var(--foreground);
+}
+
+:where(h1, h2, h3, p, dt, dd, li, a, button, label) {
+  overflow-wrap: anywhere;
+}
+
+:where(input, select, textarea) {
+  border-color: var(--border);
+  color: var(--foreground);
+}
+
+:where(input, select, textarea):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where(a, button, input, select, textarea) {
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

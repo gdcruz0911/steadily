@@ -1,5 +1,6 @@
 import { CheckinCompletionForm } from "@/components/checkin-completion-form";
 import { RouteScaffold } from "@/components/route-scaffold";
+import { StatusBadge } from "@/components/status-badge";
 import { listCheckinHistory, listDueCheckins, type CheckinRecord } from "@/db/checkins";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -14,6 +15,18 @@ function formatDateTime(value: string) {
 
 function isOverdue(checkin: CheckinRecord) {
   return checkin.status === "pending" && new Date(checkin.scheduledAt).valueOf() < Date.now();
+}
+
+function checkinStatusTone(status: CheckinRecord["status"]) {
+  if (status === "completed") {
+    return "success";
+  }
+
+  if (status === "pending") {
+    return "warning";
+  }
+
+  return "neutral";
 }
 
 export default async function CheckinsPage() {
@@ -36,16 +49,19 @@ export default async function CheckinsPage() {
         {dueCheckins.length ? (
           <div className="space-y-4">
             {dueCheckins.map((checkin) => (
-              <div key={checkin.id}>
-                <p className="mb-2 text-sm font-medium text-[var(--muted-foreground)]">
+              <div className="space-y-2" key={checkin.id}>
+                <StatusBadge tone={isOverdue(checkin) ? "warning" : "accent"}>
                   {isOverdue(checkin) ? `Overdue since ${formatDateTime(checkin.scheduledAt)}` : `Due ${formatDateTime(checkin.scheduledAt)}`}
-                </p>
+                </StatusBadge>
                 <CheckinCompletionForm checkin={checkin} />
               </div>
             ))}
           </div>
         ) : (
-          <p className="rounded-xl border bg-white p-4 text-[var(--muted-foreground)]">No check-ins are due right now.</p>
+          <section className="rounded-xl border bg-white p-5 shadow-sm" aria-labelledby="due-checkins-empty-heading">
+            <h3 className="text-lg font-semibold" id="due-checkins-empty-heading">No check-ins are due right now</h3>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">Any pending check-ins whose scheduled time arrives will appear here.</p>
+          </section>
         )}
       </section>
       <section aria-labelledby="checkin-history-heading" className="space-y-4">
@@ -56,13 +72,13 @@ export default async function CheckinsPage() {
         {history.length ? (
           <div className="space-y-4">
             {history.map((group) => (
-              <article className="rounded-xl border bg-white p-4" key={group.doseId}>
-                <h3 className="font-semibold">{group.medicationName}</h3>
+              <article className="rounded-xl border bg-white p-4 shadow-sm" key={group.doseId}>
+                <h3 className="break-words font-semibold">{group.medicationName}</h3>
                 <p className="mt-1 text-sm text-[var(--muted-foreground)]">Dose recorded {formatDateTime(group.administeredAt)}</p>
                 <ul className="mt-4 space-y-3">
                   {group.checkins.map((checkin) => (
-                    <li className="border-l-2 border-[var(--border)] pl-3" key={checkin.id}>
-                      <p className="font-medium">{checkin.window} · {checkin.status}</p>
+                    <li className="space-y-2 border-l-2 border-[var(--border)] pl-3" key={checkin.id}>
+                      <StatusBadge tone={checkinStatusTone(checkin.status)}>{checkin.window} check-in: {checkin.status}</StatusBadge>
                       <p className="mt-1 text-sm text-[var(--muted-foreground)]">Scheduled {formatDateTime(checkin.scheduledAt)}</p>
                       {checkin.completedAt ? <p className="mt-1 text-sm text-[var(--muted-foreground)]">Completed {formatDateTime(checkin.completedAt)}</p> : null}
                     </li>
@@ -72,7 +88,10 @@ export default async function CheckinsPage() {
             ))}
           </div>
         ) : (
-          <p className="rounded-xl border bg-white p-4 text-[var(--muted-foreground)]">Check-ins will appear here after you record a dose.</p>
+          <section className="rounded-xl border bg-white p-5 shadow-sm" aria-labelledby="checkin-history-empty-heading">
+            <h3 className="text-lg font-semibold" id="checkin-history-empty-heading">No check-in history yet</h3>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">Check-ins will appear here after you record a dose.</p>
+          </section>
         )}
       </section>
     </RouteScaffold>

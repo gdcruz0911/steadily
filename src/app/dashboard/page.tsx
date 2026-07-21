@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { StatusBadge } from "@/components/status-badge";
 import { listMedicationHubCards } from "@/db/medication-hub";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { RouteScaffold } from "@/components/route-scaffold";
@@ -25,6 +26,18 @@ function referenceStateLabel(status: "confirmed" | "needs_confirmation" | "unava
   return "Needs confirmation";
 }
 
+function referenceStateTone(status: "confirmed" | "needs_confirmation" | "unavailable") {
+  if (status === "confirmed") {
+    return "success";
+  }
+
+  if (status === "unavailable") {
+    return "neutral";
+  }
+
+  return "warning";
+}
+
 export default async function DashboardPage() {
   const supabase = await createSupabaseServerClient();
   const medicationCards = await listMedicationHubCards(supabase);
@@ -32,7 +45,7 @@ export default async function DashboardPage() {
   return (
     <RouteScaffold description="Your factual medication routine records in one place." title="Medication hub">
       {medicationCards.length ? (
-        <section aria-labelledby="medication-hub-heading" className="space-y-4">
+        <section aria-labelledby="medication-hub-heading" className="space-y-5">
           <div>
             <h2 className="text-xl font-semibold" id="medication-hub-heading">Your medication routines</h2>
             <p className="mt-1 text-sm text-[var(--muted-foreground)]">Recorded information only. This page does not assess adherence or provide medical advice.</p>
@@ -42,15 +55,20 @@ export default async function DashboardPage() {
               const referenceHref = `/medications/${medication.id}/reference`;
 
               return (
-                <li className="rounded-xl border bg-white p-4" key={medication.id}>
-                  <div className="space-y-1">
-                    <h3 className="text-lg font-semibold">{medication.name}</h3>
-                    <p className="text-sm text-[var(--muted-foreground)]">
-                      {medication.routeOrForm ? `Route/form: ${medication.routeOrForm}` : medication.doseTypeLabel}
-                    </p>
+                <li className="rounded-xl border bg-white p-4 shadow-sm sm:p-5" key={medication.id}>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0 space-y-1">
+                      <h3 className="break-words text-lg font-semibold">{medication.name}</h3>
+                      <p className="text-sm text-[var(--muted-foreground)]">
+                        {medication.routeOrForm ? `Route/form: ${medication.routeOrForm}` : medication.doseTypeLabel}
+                      </p>
+                    </div>
+                    <StatusBadge tone={referenceStateTone(medication.officialInformation.status)}>
+                      Official information: {referenceStateLabel(medication.officialInformation.status)}
+                    </StatusBadge>
                   </div>
 
-                  <dl className="mt-4 space-y-3 border-t pt-4 text-sm">
+                  <dl className="mt-5 grid gap-4 border-t pt-4 text-sm sm:grid-cols-3">
                     <div className="space-y-1">
                       <dt className="font-medium">Most recently recorded dose</dt>
                       <dd className="text-[var(--muted-foreground)]">
@@ -73,17 +91,17 @@ export default async function DashboardPage() {
                     </div>
                   </dl>
 
-                  <div className="mt-5 grid grid-cols-2 gap-2" aria-label={`${medication.name} links`}>
-                    <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border px-3 text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--surface-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]" href="/doses">
+                  <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4" aria-label={`${medication.name} links`}>
+                    <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border px-3 text-center text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--surface-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]" href="/doses">
                       Dose history
                     </Link>
-                    <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border px-3 text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--surface-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]" href="/checkins">
+                    <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border px-3 text-center text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--surface-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]" href="/checkins">
                       Check-ins
                     </Link>
-                    <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border px-3 text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--surface-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]" href="/visit-prep">
+                    <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border px-3 text-center text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--surface-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]" href="/visit-prep">
                       Visit Prep
                     </Link>
-                    <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border px-3 text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--surface-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]" href="/updates">
+                    <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border px-3 text-center text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--surface-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]" href="/updates">
                       Research &amp; Updates
                     </Link>
                   </div>
@@ -103,7 +121,7 @@ export default async function DashboardPage() {
           </ul>
         </section>
       ) : (
-        <section className="rounded-xl border bg-white p-4" aria-labelledby="medication-hub-empty-heading">
+        <section className="rounded-xl border bg-white p-5 shadow-sm" aria-labelledby="medication-hub-empty-heading">
           <h2 className="text-xl font-semibold" id="medication-hub-empty-heading">No medication routines yet</h2>
           <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">Add a personal medication routine to see its recorded doses, pending check-ins, and official-information state here.</p>
           <Link className="mt-4 inline-flex min-h-12 items-center rounded-xl bg-[var(--accent)] px-4 text-sm font-semibold text-white hover:bg-[var(--accent-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]" href="/medications/new">

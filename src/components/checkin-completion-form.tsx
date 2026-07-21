@@ -3,6 +3,7 @@
 import { useActionState, useState, type FormEvent } from "react";
 
 import { completeCheckin, type CompleteCheckinState, skipCheckin } from "@/app/checkins/actions";
+import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import type { CheckinRecord } from "@/db/checkins";
 import { checkinScoreFields, checkinScoreLabels } from "@/lib/validation/checkins";
@@ -29,9 +30,10 @@ export function CheckinCompletionForm({ checkin }: { checkin: CheckinRecord }) {
   }
 
   return (
-    <div className="space-y-4 rounded-xl border bg-white p-4">
-      <div>
-        <h3 className="font-semibold">{checkin.medicationName} · {checkin.window}</h3>
+    <div className="space-y-4 rounded-xl border bg-white p-4 shadow-sm">
+      <div className="space-y-2">
+        <StatusBadge tone="accent">Due check-in</StatusBadge>
+        <h3 className="break-words font-semibold">{checkin.medicationName} · {checkin.window}</h3>
         <p className="mt-1 text-sm text-[var(--muted-foreground)]">Choose a 0–5 score for each structured item.</p>
       </div>
       <form action={formAction} className="space-y-4" noValidate onSubmit={validateScores}>
@@ -58,8 +60,8 @@ export function CheckinCompletionForm({ checkin }: { checkin: CheckinRecord }) {
             </div>
           ))}
         </div>
-        {state.error ? <p className="text-sm font-medium text-[var(--error)]" role="alert">{state.error}</p> : null}
-        <Button disabled={isPending} type="submit">{isPending ? "Saving" : "Complete check-in"}</Button>
+        {state.error ? <p className="rounded-xl border border-[var(--error)] bg-[var(--error-soft)] p-3 text-sm font-medium text-[var(--error)]" role="alert">{state.error}</p> : null}
+        <Button disabled={isPending} type="submit">{isPending ? "Saving check-in" : "Complete check-in"}</Button>
       </form>
       <form action={skipCheckin}>
         <input name="checkinId" type="hidden" value={checkin.id} />

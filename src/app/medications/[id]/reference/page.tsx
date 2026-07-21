@@ -41,17 +41,17 @@ export default async function MedicationReferencePage({
       title="Official medication reference"
     >
       <div className="space-y-6">
-        <section className="space-y-4 rounded-xl border bg-white p-4" aria-labelledby="routine-name">
+        <section className="space-y-4 rounded-xl border bg-white p-4 shadow-sm" aria-labelledby="routine-name">
           <RouteIllustration doseType={medication.doseType} />
           <div>
             <p className="text-sm text-[var(--muted-foreground)]">Your routine</p>
-            <h2 className="text-xl font-semibold" id="routine-name">{medication.displayName}</h2>
+            <h2 className="break-words text-xl font-semibold" id="routine-name">{medication.displayName}</h2>
             <p className="mt-1 text-sm text-[var(--muted-foreground)]">Selected form or route: {selectedFormOrRoute(medication.doseType)}</p>
           </div>
         </section>
         <MedicationReferenceFlow medicationId={medication.id} reference={reference} selectedFormOrRoute={selectedFormOrRoute(medication.doseType)} />
-        <p className="rounded-xl border bg-[var(--surface-muted)] p-4 text-sm text-[var(--foreground)]">Official reference information. This does not replace your pharmacist, prescriber, or the full official guide.</p>
-        <Link className="inline-flex min-h-11 items-center font-semibold text-[var(--accent)] underline" href={`/medications/${medication.id}`}>Back to routine</Link>
+        <p className="rounded-xl border bg-[var(--surface-muted)] p-4 text-sm leading-6 text-[var(--foreground)]">Official reference information. This does not replace your pharmacist, prescriber, or the full official guide.</p>
+        <Link className="inline-flex min-h-11 items-center rounded-xl px-3 text-sm font-semibold text-[var(--accent)] underline decoration-2 underline-offset-4 hover:text-[var(--accent-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]" href={`/medications/${medication.id}`}>Back to routine</Link>
       </div>
     </RouteScaffold>
   );

@@ -43,6 +43,10 @@ export function DoseForm({ medications, recentInjectionSites }: DoseFormProps) {
       }}
     >
       <input name="administeredAt" ref={isoValueRef} type="hidden" />
+      <div className="space-y-1 border-b pb-4">
+        <h2 className="text-xl font-semibold">Record a dose</h2>
+        <p className="text-sm leading-6 text-[var(--muted-foreground)]">Save a factual administration record for one of your routines.</p>
+      </div>
       <div className="space-y-2">
         <label className="block text-sm font-medium" htmlFor="medicationId">
           Medication routine
@@ -86,14 +90,14 @@ export function DoseForm({ medications, recentInjectionSites }: DoseFormProps) {
             ))}
           </select>
           {recentSites.length ? (
-            <p className="rounded-xl bg-[var(--surface-muted)] p-3 text-sm text-[var(--muted-foreground)]">
+            <p className="rounded-xl border bg-[var(--surface-muted)] p-3 text-sm leading-6 text-[var(--muted-foreground)]">
               Recent sites: {recentSites.map(siteLabel).join(", ")}. If it works for you, consider choosing a different site. You can select any site.
             </p>
           ) : null}
         </div>
       ) : null}
-      {state.error ? <p className="text-sm font-medium text-[var(--error)]" role="alert">{state.error}</p> : null}
-      <Button disabled={isPending || !medication} type="submit">{isPending ? "Saving" : "Save dose"}</Button>
+      {state.error ? <p className="rounded-xl border border-[var(--error)] bg-[var(--error-soft)] p-3 text-sm font-medium text-[var(--error)]" role="alert">{state.error}</p> : null}
+      <Button disabled={isPending || !medication} type="submit">{isPending ? "Saving dose" : "Save dose"}</Button>
     </form>
   );
 }

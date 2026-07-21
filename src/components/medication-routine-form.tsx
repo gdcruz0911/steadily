@@ -32,8 +32,12 @@ export function MedicationRoutineForm({
   );
 
   return (
-    <form action={formAction} className="space-y-5" noValidate>
+    <form action={formAction} className="space-y-5 rounded-xl border bg-white p-4 shadow-sm sm:p-5" noValidate>
       {returnTo ? <input name="returnTo" type="hidden" value={returnTo} /> : null}
+      <div className="space-y-1 border-b pb-4">
+        <h2 className="text-xl font-semibold">Routine details</h2>
+        <p className="text-sm leading-6 text-[var(--muted-foreground)]">Use a personal routine label and the details you want to track.</p>
+      </div>
       <div className="space-y-2">
         <label className="block text-sm font-medium text-[var(--foreground)]" htmlFor="displayName">
           Routine name
@@ -72,8 +76,8 @@ export function MedicationRoutineForm({
         </label>
         <input className="min-h-12 w-full rounded-xl border bg-white px-3" defaultValue={initialMedication?.intervalDays} id="intervalDays" min="1" name="intervalDays" required type="number" />
       </div>
-      <label className="flex min-h-12 items-center gap-3 rounded-xl border bg-white px-3 text-sm font-medium">
-        <input checked={hasLoadingPhase} name="hasLoadingPhase" onChange={(event) => setHasLoadingPhase(event.target.checked)} type="checkbox" />
+      <label className="flex min-h-12 items-center gap-3 rounded-xl border bg-[var(--surface-subtle)] px-3 text-sm font-medium">
+        <input checked={hasLoadingPhase} className="size-4 accent-[var(--accent)]" name="hasLoadingPhase" onChange={(event) => setHasLoadingPhase(event.target.checked)} type="checkbox" />
         Include a loading phase
       </label>
       {hasLoadingPhase ? (
@@ -88,8 +92,8 @@ export function MedicationRoutineForm({
           </div>
         </div>
       ) : null}
-      {state.error ? <p aria-live="polite" className="text-sm font-medium text-[var(--error)]" role="alert">{state.error}</p> : null}
-      <Button disabled={isPending} type="submit">{isPending ? "Saving" : submitLabel}</Button>
+      {state.error ? <p aria-live="polite" className="rounded-xl border border-[var(--error)] bg-[var(--error-soft)] p-3 text-sm font-medium text-[var(--error)]" role="alert">{state.error}</p> : null}
+      <Button disabled={isPending} type="submit">{isPending ? "Saving routine" : submitLabel}</Button>
     </form>
   );
 }

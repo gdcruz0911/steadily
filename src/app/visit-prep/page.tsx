@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { RouteScaffold } from "@/components/route-scaffold";
+import { StatusBadge } from "@/components/status-badge";
 import { VisitPrepCopyButton } from "@/components/visit-prep-copy-button";
 import { getVisitPrepData } from "@/db/visit-prep";
 import {
@@ -19,6 +20,18 @@ function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
+function checkinStatusTone(status: "completed" | "pending" | "skipped") {
+  if (status === "completed") {
+    return "success";
+  }
+
+  if (status === "pending") {
+    return "warning";
+  }
+
+  return "neutral";
+}
+
 export default async function VisitPrepPage({
   searchParams,
 }: {
@@ -33,7 +46,7 @@ export default async function VisitPrepPage({
       description="Review a factual record from your selected time range and copy it for a visit discussion."
       title="Visit prep"
     >
-      <section className="rounded-xl border bg-white p-4" aria-labelledby="visit-prep-boundary-heading">
+      <section className="rounded-xl border bg-white p-4 shadow-sm" aria-labelledby="visit-prep-boundary-heading">
         <h2 className="font-semibold" id="visit-prep-boundary-heading">For your visit discussion</h2>
         <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
           This is a personal record for discussion with a clinician, not medical advice.
@@ -45,7 +58,7 @@ export default async function VisitPrepPage({
           <h2 className="text-xl font-semibold" id="visit-prep-range-heading">Date range</h2>
           <p className="mt-1 text-sm text-[var(--muted-foreground)]">Choose the records you want to review.</p>
         </div>
-        <div aria-label="Date range options" className="flex gap-2">
+        <div aria-label="Date range options" className="flex flex-wrap gap-2">
           {visitPrepRangeOptions.map((option) => {
             const isSelected = option === rangeDays;
 
@@ -70,11 +83,15 @@ export default async function VisitPrepPage({
           <h2 className="text-xl font-semibold" id="visit-prep-medications-heading">Medication routines</h2>
           <p className="mt-1 text-sm text-[var(--muted-foreground)]">Your saved routine labels.</p>
         </div>
-        <ul className="space-y-3">
-          {visitPrep.medications.map((medication) => (
-            <li className="rounded-xl border bg-white p-4 font-semibold" key={medication.id}>{medication.name}</li>
-          ))}
-        </ul>
+        {visitPrep.medications.length ? (
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {visitPrep.medications.map((medication) => (
+              <li className="break-words rounded-xl border bg-white p-4 font-semibold shadow-sm" key={medication.id}>{medication.name}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="rounded-xl border bg-white p-4 text-sm text-[var(--muted-foreground)]">No medication routines are available in your records.</p>
+        )}
       </section>
 
       <section className="space-y-4" aria-labelledby="visit-prep-doses-heading">
@@ -83,10 +100,10 @@ export default async function VisitPrepPage({
           <p className="mt-1 text-sm text-[var(--muted-foreground)]">Administration times in the selected range.</p>
         </div>
         {visitPrep.doses.length ? (
-          <ul className="space-y-3">
+          <ul className="grid gap-3 sm:grid-cols-2">
             {visitPrep.doses.map((dose) => (
-              <li className="rounded-xl border bg-white p-4" key={dose.id}>
-                <p className="font-semibold">{dose.medicationName}</p>
+              <li className="rounded-xl border bg-white p-4 shadow-sm" key={dose.id}>
+                <p className="break-words font-semibold">{dose.medicationName}</p>
                 <p className="mt-1 text-sm text-[var(--muted-foreground)]">Administration time {formatDateTime(dose.administeredAt)}</p>
               </li>
             ))}
@@ -107,17 +124,17 @@ export default async function VisitPrepPage({
               const scores = getRecordedScores(checkin.scores);
 
               return (
-                <li className="rounded-xl border bg-white p-4" key={checkin.id}>
-                  <p className="font-semibold">{checkin.medicationName}</p>
-                  <p className="mt-1 text-sm font-medium">{checkin.window} check-in · {checkin.status}</p>
+                <li className="rounded-xl border bg-white p-4 shadow-sm" key={checkin.id}>
+                  <p className="break-words font-semibold">{checkin.medicationName}</p>
+                  <div className="mt-2"><StatusBadge tone={checkinStatusTone(checkin.status)}>{checkin.window} check-in: {checkin.status}</StatusBadge></div>
                   <p className="mt-1 text-sm text-[var(--muted-foreground)]">Dose recorded {formatDateTime(checkin.administeredAt)}</p>
                   <p className="mt-1 text-sm text-[var(--muted-foreground)]">Scheduled {formatDateTime(checkin.scheduledAt)}</p>
                   {checkin.completedAt ? <p className="mt-1 text-sm text-[var(--muted-foreground)]">Completed {formatDateTime(checkin.completedAt)}</p> : null}
                   {scores.length ? (
-                    <dl className="mt-4 space-y-2 border-t pt-3 text-sm">
-                      <dt className="font-medium">Recorded scores</dt>
-                      {scores.map((score) => (
-                        <div className="flex justify-between gap-4" key={score.label}>
+                      <dl className="mt-4 space-y-2 border-t pt-3 text-sm">
+                        <dt className="font-medium">Recorded scores</dt>
+                        {scores.map((score) => (
+                        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4" key={score.label}>
                           <dd className="text-[var(--muted-foreground)]">{score.label}</dd>
                           <dd>{score.value}</dd>
                         </div>

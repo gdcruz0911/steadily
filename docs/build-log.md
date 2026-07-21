@@ -279,3 +279,21 @@ personal data; use synthetic examples only.
 - **Verified:** No Markdown linter or link-checker is configured. A local
   structural check confirmed the required README sections and that all six
   Updates links match the version-controlled curated source URLs.
+
+---
+
+## 2026-07-21 - Authenticated UI clarity pass
+
+- **Context:** Refine the existing mobile-first authenticated experience
+  without changing data, navigation destinations, or product scope.
+- **Changed:** Added active navigation, shared factual status badges, stronger
+  focus/wrap/reduced-motion styles, consistent form and empty/error/loading
+  states, and responsive card grouping across the Medication Hub, medication
+  routine detail, doses, check-ins, Visit Prep, and Updates.
+- **Verified:** `npm run lint`, `npm run typecheck`, `npm run test` (12 files,
+  22 tests), and `npm run build` passed. The isolated local shell had no
+  horizontal overflow at 390px, 768px, or 1280px; the 390px check found a 44px
+  minimum interactive height. The authenticated browser session itself was not
+  available to the isolated audit tab.
+- **Data/safety impact:** No schema, RLS, external request, user data handling,
+  or clinical language changed.

@@ -10,15 +10,15 @@ export function RouteScaffold({
   title: string;
 }) {
   return (
-    <section aria-labelledby="page-title" className="space-y-6">
-      <div className="space-y-3">
+    <section aria-labelledby="page-title" className="space-y-8">
+      <div className="space-y-3 border-b border-[var(--border)] pb-5 sm:pb-6">
         <h1
-          className="text-3xl font-semibold tracking-tight text-[var(--foreground)]"
+          className="text-3xl font-semibold tracking-tight text-[var(--foreground)] sm:text-4xl"
           id="page-title"
         >
           {title}
         </h1>
-        <p className="max-w-prose text-base leading-7 text-[var(--muted-foreground)]">
+        <p className="max-w-2xl text-base leading-7 text-[var(--muted-foreground)]">
           {description}
         </p>
       </div>

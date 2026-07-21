@@ -47,28 +47,31 @@ export default async function DosesPage() {
               <p className="mt-1 text-sm text-[var(--muted-foreground)]">Most recent first.</p>
             </div>
             {doses.length ? (
-              <ul className="space-y-3">
+              <ul className="grid gap-3 sm:grid-cols-2">
                 {doses.map((dose) => (
-                  <li className="rounded-xl border bg-white p-4" key={dose.id}>
-                    <p className="font-semibold">{dose.medicationName}</p>
+                  <li className="rounded-xl border bg-white p-4 shadow-sm" key={dose.id}>
+                    <p className="break-words font-semibold">{dose.medicationName}</p>
                     <p className="mt-1 text-sm text-[var(--muted-foreground)]">{formatDateTime(dose.administeredAt)}</p>
                     {dose.injectionSite ? <p className="mt-1 text-sm text-[var(--muted-foreground)]">Injection site: {siteLabel(dose.injectionSite)}</p> : null}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="rounded-xl border bg-white p-4 text-[var(--muted-foreground)]">No doses recorded yet.</p>
+              <section className="rounded-xl border bg-white p-5 shadow-sm" aria-labelledby="dose-history-empty-heading">
+                <h3 className="text-lg font-semibold" id="dose-history-empty-heading">No doses recorded yet</h3>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">Your saved dose records will appear here, most recent first.</p>
+              </section>
             )}
           </section>
           <section className="space-y-3" aria-labelledby="routine-timing-heading">
             <h2 className="text-xl font-semibold" id="routine-timing-heading">Routine timing</h2>
             <p className="text-sm text-[var(--muted-foreground)]">Calculated from your most recent record and saved routine interval. This is not medical guidance.</p>
-            <ul className="space-y-3">
+            <ul className="grid gap-3 sm:grid-cols-2">
               {medications.map((medication) => {
                 const nextDose = getCalculatedNextDose(medication, doses);
                 return (
-                  <li className="rounded-xl border bg-white p-4" key={medication.id}>
-                    <p className="font-semibold">{medication.displayName}</p>
+                  <li className="rounded-xl border bg-white p-4 shadow-sm" key={medication.id}>
+                    <p className="break-words font-semibold">{medication.displayName}</p>
                     <p className="mt-1 text-sm text-[var(--muted-foreground)]">
                       {nextDose ? `Next calculated date: ${formatDateTime(nextDose)}` : "Record a dose to calculate a routine date."}
                     </p>
@@ -79,7 +82,10 @@ export default async function DosesPage() {
           </section>
         </div>
       ) : (
-        <p className="rounded-xl border bg-white p-4 text-[var(--muted-foreground)]">Add a medication routine before recording a dose.</p>
+        <section className="rounded-xl border bg-white p-5 shadow-sm" aria-labelledby="doses-empty-heading">
+          <h2 className="text-lg font-semibold" id="doses-empty-heading">A routine is needed first</h2>
+          <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">Add a personal medication routine before recording a dose.</p>
+        </section>
       )}
     </RouteScaffold>
   );
