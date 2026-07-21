@@ -15,6 +15,7 @@ output is a **visit discussion summary**, not a clinical report.
 | Official medication reference | medication ID, DailyMed provider, SET ID, official URL, title, confirmed product/form or route, source date, retrieved/confirmed timestamps, status | Only after explicit confirmation or an unavailable choice | No |
 | Dose | user ID, medication ID, administered timestamp, optional controlled injection site, created/updated timestamps | Yes | Relative timing only |
 | Check-in | user ID, dose ID, 24h/72h window, scheduled/completed timestamps, pending/completed/skipped status, six nullable 0–5 structured scores, created/updated timestamps | Yes | Relative timing, controlled status, and structured scores only |
+| Visit prep | A browser-rendered factual selection of the person’s existing medication, dose, and check-in records for a 7-day or 30-day window | No new data; reads existing owner-scoped records only | No |
 | Saved summary | selected relative window, summary text, model ID, payload version, created timestamp | Only after explicit Save summary action | Generation response only |
 | Excluded inputs | zip codes, account identifiers, storage notes, free-text clinical fields | Not collected in the MVP | No |
 
@@ -45,6 +46,20 @@ receives it.
 
 Generated output is rendered for the person but is not persisted by default.
 Saving it requires a separate explicit Save summary action.
+
+## Visit Prep
+
+Visit Prep is a factual, read-only view of the authenticated person’s existing
+medication routines, doses, and check-ins. A person may choose a 7-day or
+30-day window. Doses are included by administration time; check-ins are included
+by scheduled time. The page shows recorded check-in scores only when they are
+present.
+
+“Copy for my visit” creates plain text in the person’s local browser clipboard.
+Steadily does not store that text, send it to an LLM or external API, run
+background processing, or treat it as a generated visit discussion summary.
+The page states that it is a personal record for discussion with a clinician,
+not medical advice.
 
 ## Consent language
 
