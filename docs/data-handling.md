@@ -13,13 +13,17 @@ output is a **visit discussion summary**, not a clinical report.
 | Account/profile | Supabase auth user ID, email (Auth only), email-verification state (Auth only), notification preferences, created/updated timestamps | Yes | No |
 | Medication routine | user ID, display name, color label, dose type, interval, optional loading-phase values, created/updated timestamps | Yes | No |
 | Official medication reference | medication ID, DailyMed provider, SET ID, official URL, title, confirmed product/form or route, source date, retrieved/confirmed timestamps, status | Only after explicit confirmation or an unavailable choice | No |
-| Dose | medication ID, scheduled timestamp, created timestamp | Yes | Relative timing only |
+| Dose | user ID, medication ID, administered timestamp, optional controlled injection site, created/updated timestamps | Yes | Relative timing only |
 | Check-in | dose ID, status, checked timestamp, created timestamp | Yes | Relative timing and structured status only |
 | Saved summary | selected relative window, summary text, model ID, payload version, created timestamp | Only after explicit Save summary action | Generation response only |
 | Excluded inputs | zip codes, account identifiers, storage notes, free-text clinical fields | Not collected in the MVP | No |
 
 Check-in status is a controlled enum, not free text. The first summary version
 contains no free-text notes.
+
+Dose records contain no dosage amount, instructions, clinical drug details, or
+free text. A calculated routine date is derived from the latest recorded dose
+and the saved medication interval; it is never stored as a dose field.
 
 ## GPT-5.6 payload rule
 

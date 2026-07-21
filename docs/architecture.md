@@ -94,10 +94,13 @@ clinical claims.
 3. 003_medication_references.sql: create one optional official-source reference
    per medication routine, with source metadata, confirmation status, and
    RLS through the medication owner. Candidate responses are never stored.
-4. 004_doses.sql: create doses owned through their medication, with a scheduled
-   timestamp and timestamps.
-5. 005_checkins.sql: create checkins owned through their dose, with structured
-   status and recorded timestamp.
+4. 004_doses.sql: create user-owned, medication-linked dose records with an
+   administered timestamp, optional controlled injection site, timestamps, and
+   explicit owner-only CRUD RLS. Calculate routine timing from the latest dose
+   plus the medication interval; do not store a next-dose timestamp.
+5. 005_checkins.sql: after doses are verified, create user-owned, dose-linked
+   24-hour and 72-hour controlled check-ins. A dose creates pending rows
+   transactionally; due and overdue state are derived, not stored.
 6. 006_visit_discussion_summaries.sql: create optional user-saved summaries
    with profile_id, selected-window metadata, generated text, model ID, and
    payload version. Generation alone does not create a row.
@@ -144,9 +147,12 @@ erDiagram
   }
   DOSES {
     uuid id PK
+    uuid user_id FK
     uuid medication_id FK
-    timestamptz scheduled_for
+    timestamptz administered_at
+    text injection_site
     timestamptz created_at
+    timestamptz updated_at
   }
   MEDICATION_REFERENCES {
     uuid id PK

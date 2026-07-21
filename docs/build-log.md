@@ -128,7 +128,20 @@ personal data; use synthetic examples only.
   one staged slice.
 - **Important decision:** Candidate data stays transient; only a
   server-revalidated SET ID confirmed by the person may create stored metadata.
-- **Commits:** No commit was created for this staged reference slice because
-  commit authorization was declined. Prior related commits: `3c6fdcb` (routine
-  setup), `dd75f55` (auth and access control), `16c761c` (app shell), and
-  `77f0fa4` (foundation).
+- **Commits:** `e75ad4f` created and pushed to `origin/master` on 2026-07-20.
+
+---
+
+## 2026-07-20 - Dose tracking implemented
+
+- **Decision:** Add `004_doses.sql` with direct `user_id` ownership, controlled
+  optional injection sites, and explicit owner-only CRUD RLS. Next routine timing
+  is calculated from the latest record and medication interval, not stored.
+- **Safety:** Server-side access derives user ownership from the authenticated
+  session and rejects injection sites for non-self-injection routines. No notes,
+  dosage amounts, clinical details, or instructions were added.
+- **Changed:** Dose migration, validation/data-access/actions, `/doses` form and
+  history, and dose manual test plan. `005_checkins.sql` remains unimplemented.
+- **Verified:** `npm run lint`, `npm run typecheck`, `npm run test` (10 tests),
+  and `npm run build` passed. Live Supabase, two-user RLS, and 390px checks are
+  pending the local public Supabase configuration.
