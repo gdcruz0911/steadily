@@ -98,15 +98,18 @@ clinical claims.
    administered timestamp, optional controlled injection site, timestamps, and
    explicit owner-only CRUD RLS. Calculate routine timing from the latest dose
    plus the medication interval; do not store a next-dose timestamp.
-5. 005_checkins.sql: after doses are verified, create user-owned, dose-linked
+5. 005_data_api_grants.sql: revoke existing authenticated table privileges, then
+   grant only SELECT, INSERT, UPDATE, and DELETE on profiles, medications,
+   medication references, and doses. RLS remains enabled; anon receives nothing.
+6. 006_checkins.sql: after doses are verified, create user-owned, dose-linked
    24-hour and 72-hour controlled check-ins. A dose creates pending rows
    transactionally; due and overdue state are derived, not stored.
-6. 006_visit_discussion_summaries.sql: create optional user-saved summaries
+7. 007_visit_discussion_summaries.sql: create optional user-saved summaries
    with profile_id, selected-window metadata, generated text, model ID, and
    payload version. Generation alone does not create a row.
-7. 007_rls_policies.sql: enable RLS, add explicit per-operation policies with
+8. 008_rls_policies.sql: enable RLS, add explicit per-operation policies with
    comments for every user-owned table, and add ownership/date indexes.
-8. 008_deletion_support.sql: implement reviewed deletion support only after the
+9. 009_deletion_support.sql: implement reviewed deletion support only after the
    retention policy and backup window are approved.
 
 A separate summary_generation_events table is not planned. Add one only if a

@@ -1,29 +1,26 @@
 # Handoff
 
-**What works end to end:** The App Router shell, email/password auth flow,
-protected redirects, medication routine management, consent-gated official
-references, and dose recording are implemented. Doses select an owned routine,
-record an editable local date/time, show injection-site options only for
-self-injection, offer a non-clinical last-two-site suggestion, and display
-reverse-chronological history plus calculated routine timing.
+**What works end to end:** Email/password auth, protected routes, personal
+medication routines, consent-gated official references, and dose tracking work
+against the linked non-production Supabase project. Data API access and RLS
+were verified with synthetic User A/User B sessions.
 
-**Changed today:** Committed/pushed Medication Reference as `e75ad4f`. Added
-`004_doses.sql`, session-derived dose access, Zod validation, `/doses` UI,
-focused tests, and manual dose/RLS plan. `005_checkins.sql` is defined only in
-the architecture plan and has not been created.
+**Changed today:** Applied `005_data_api_grants.sql`. It revokes existing
+`authenticated` table grants, then grants only SELECT/INSERT/UPDATE/DELETE on
+profiles, medications, medication references, and doses; RLS remains enabled
+and anon receives no grant. The future check-in migration is now
+`006_checkins.sql`.
 
-**Verified:** `npm run lint`, `npm run typecheck`, `npm run test` (10 tests),
-and `npm run build` pass. Live Supabase, two-user RLS, and 390px checks remain
-blocked by absent local public Supabase variables.
+**Verified:** Remote migration history matches local 001–005. The safe dry run
+planned only 005 before apply. Lint, type-check, tests (10), and production
+build passed. Synthetic User B could not view User A’s medication/reference or
+dose history, and an authenticated public-key API insert for User A’s
+medication was denied; User A’s dose count was unchanged. No credentials,
+identifiers, or real data were recorded.
 
-**Committed:** Medication Reference `e75ad4f`; dose tracking `59b62e4`. Both
-were pushed to `origin/master`.
+**Failures/blockers:** None. `.env.local` remains untracked; no service-role
+key is used. The two synthetic accounts and records remain in non-production
+Supabase for later manual checks.
 
-**Blockers:** `.env.local` is absent. Configure
-`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, apply migrations
-001-003 to a non-production Supabase project, and use synthetic User A/User B
-accounts. This is required for live auth, 390px, DailyMed, and RLS checks. Do
-not add or expose a service-role key.
-
-**Exact next smallest task:** Configure Supabase and execute
-`docs/manual-dose-test.md` with synthetic users.
+**Exact next smallest task:** Implement and verify only the approved
+`006_checkins.sql` slice; do not change the dose or grant migrations.

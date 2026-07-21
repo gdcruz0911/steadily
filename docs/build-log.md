@@ -146,3 +146,28 @@ personal data; use synthetic examples only.
   and `npm run build` passed. Live Supabase, two-user RLS, and 390px checks are
   pending the local public Supabase configuration.
 - **Commit:** `59b62e4` created and pushed to `origin/master` on 2026-07-20.
+
+---
+
+## 2026-07-21 - Authenticated Data API grants verified
+
+- **Context:** The linked non-production project exposed the existing tables
+  through the Data API but lacked authenticated DML table privileges, preventing
+  normal user sessions from saving routines and doses.
+- **Decision:** Add `005_data_api_grants.sql` without rewriting migrations
+  001–004. Revoke all `authenticated` table privileges first, then grant only
+  SELECT, INSERT, UPDATE, and DELETE on profiles, medications, medication
+  references, and doses. Keep RLS enabled and grant nothing to anon.
+- **Data/safety impact:** The browser and verifier use only the public
+  Supabase key and normal authenticated sessions. Synthetic records only; no
+  credentials, identifiers, or health data were logged.
+- **Changed:** `005_data_api_grants.sql`, architecture migration numbering,
+  and operational handoff.
+- **Verified:** Safe linked dry run planned only 005; remote migration history
+  matched 001–005 after apply. Lint, type-check, 10 focused tests, and the
+  production build passed. Synthetic User B received 404 for User A’s routine
+  and reference and could not see User A’s dose. A one-off public-key,
+  authenticated-session insert linked to User A’s medication was denied; User
+  A’s dose count was unchanged.
+- **Follow-up:** Implement only approved `006_checkins.sql` after this
+  checkpoint. The temporary local verifier was removed after the pass.
